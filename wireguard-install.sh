@@ -128,9 +128,6 @@ function autoIntall(){
 	# ALLOWED_IPS="0.0.0.0/0,::/0"
 	ALLOWED_IPS="0.0.0.0/0,::/0"
 
-
-
-
 }
 function installQuestions() {
 	echo "Welcome to the WireGuard installer!"
@@ -199,7 +196,7 @@ function installWireGuard() {
 		autoIntall
 	else
 		installQuestions
-	end
+	fi
 	
 
 	# Install WireGuard tools and module
