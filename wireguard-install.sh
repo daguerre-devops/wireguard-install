@@ -114,10 +114,10 @@ function autoIntall(){
 	SERVER_WG_IPV4=10.66.66.1
 
 	# Server WireGuard IPv6
-	SERVER_WG_IPV6
+	SERVER_WG_IPV6=fd42:42:42::1
 
 	# Server WireGuard port
-	SERVER_PORT = 55551
+	SERVER_PORT=55551
 
 	# CLIENT_DNS_1
 	CLIENT_DNS_1=1.1.1.1
