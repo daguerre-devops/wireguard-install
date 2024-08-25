@@ -100,7 +100,38 @@ function initialCheck() {
 	checkVirt
 	checkOS
 }
+function autoIntall(){
+	# Detect public IPv4 or IPv6 address and pre-fill for the user
+	SERVER_PUB_IP=$(ip -4 addr | sed -ne 's|^.* inet \([^/]*\)/.* scope global.*$|\1|p' | awk '{print $1}' | head -1)
+	
+	# Detect public interface and pre-fill for the user
+	SERVER_NIC="$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)"
 
+	# WireGuard interface name
+	SERVER_WG_NIC= "wg0"
+
+	# Server WireGuard IPv4
+	SERVER_WG_IPV4=10.66.66.1
+
+	# Server WireGuard IPv6
+	SERVER_WG_IPV6
+
+	# Server WireGuard port
+	SERVER_PORT = 55551
+
+	# CLIENT_DNS_1
+	CLIENT_DNS_1=1.1.1.1
+
+	# CLIENT_DNS_2
+	CLIENT_DNS_2=1.0.0.1
+
+	# ALLOWED_IPS="0.0.0.0/0,::/0"
+	ALLOWED_IPS="0.0.0.0/0,::/0"
+
+
+
+
+}
 function installQuestions() {
 	echo "Welcome to the WireGuard installer!"
 	echo "The git repository is available at: https://github.com/angristan/wireguard-install"
@@ -111,12 +142,7 @@ function installQuestions() {
 
 	# Detect public IPv4 or IPv6 address and pre-fill for the user
 	SERVER_PUB_IP=$(ip -4 addr | sed -ne 's|^.* inet \([^/]*\)/.* scope global.*$|\1|p' | awk '{print $1}' | head -1)
-	if [[ -z ${SERVER_PUB_IP} ]]; then
-		# Detect public IPv6 address
-		SERVER_PUB_IP=$(ip -6 addr | sed -ne 's|^.* inet6 \([^/]*\)/.* scope global.*$|\1|p' | head -1)
-	fi
-	read -rp "IPv4 or IPv6 public address: " -e -i "${SERVER_PUB_IP}" SERVER_PUB_IP
-
+	
 	# Detect public interface and pre-fill for the user
 	SERVER_NIC="$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)"
 	until [[ ${SERVER_PUB_NIC} =~ ^[a-zA-Z0-9_]+$ ]]; do
@@ -168,7 +194,13 @@ function installQuestions() {
 
 function installWireGuard() {
 	# Run setup questions first
-	installQuestions
+	read "do you need installQuestions?" QUESTIONS
+	if [[ ${QUESTIONS} == "" ]]; then
+		autoIntall
+	else
+		installQuestions
+	end
+	
 
 	# Install WireGuard tools and module
 	if [[ ${OS} == 'ubuntu' ]] || [[ ${OS} == 'debian' && ${VERSION_ID} -gt 10 ]]; then
